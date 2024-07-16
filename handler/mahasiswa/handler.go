@@ -6,7 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -89,10 +88,6 @@ func DeleteMahasiswa(c *fiber.Ctx) error {
 }
 func UpdateMahasiswa(c *fiber.Ctx) error {
 	id := c.Params("id")
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid ID format")
-	}
 
 	var requestData model.DataMahasiswa
 	if err := c.BodyParser(&requestData); err != nil {
@@ -101,7 +96,7 @@ func UpdateMahasiswa(c *fiber.Ctx) error {
 		})
 	}
 
-	filter := bson.M{"_id": objectId}
+	filter := bson.M{"id": id}
 	if err := db.UpdateMahasiswa(filter, requestData); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return fiber.NewError(fiber.StatusNotFound, "No document found")
