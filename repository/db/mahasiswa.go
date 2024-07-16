@@ -4,6 +4,7 @@ import (
 	"api/config"
 	"api/model"
 	"errors"
+	"fmt"
 	"github.com/kamagasaki/go-utils/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -47,5 +48,24 @@ func GetOneDataMahasiswaFilter(filter bson.M) (model.DataMahasiswa, error) {
 	if err != nil {
 		return model.DataMahasiswa{}, err
 	}
+	return data, nil
+}
+func UpdateMahasiswa(filter bson.M, updateData model.DataMahasiswa) error {
+	db := mongo.MongoConnect(DBATS)
+	result := mongo.ReplaceOneDoc(db, config.MahasiswaColl, filter, updateData)
+	if result == nil || result.MatchedCount == 0 {
+		return fmt.Errorf("no matching document found for update")
+	}
+	return nil
+}
+func DeleteMahasiswa(filter bson.M) (model.DataMahasiswa, error) {
+	db := mongo.MongoConnect(DBATS)
+	var data model.DataMahasiswa
+	result := mongo.DeleteOneDoc(db, config.MahasiswaColl, filter)
+
+	if result == nil || result.DeletedCount == 0 {
+		return model.DataMahasiswa{}, fmt.Errorf("failed to delete document: no documents matched the filter")
+	}
+
 	return data, nil
 }

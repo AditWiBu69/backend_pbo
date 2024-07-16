@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func TambahMahasiswa(c *fiber.Ctx) error {
@@ -65,6 +67,52 @@ func GetDataMahasiswaByUname(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "Data retrieved successfully",
+		"data":    requestData,
+	})
+}
+func DeleteMahasiswa(c *fiber.Ctx) error {
+	id := c.Params("id")
+	filter := bson.M{"id": id}
+
+	requestData, err := db.DeleteMahasiswa(filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return fiber.NewError(fiber.StatusNotFound, "No document found")
+		}
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Data deleted successfully",
+		"data":    requestData,
+	})
+}
+func UpdateMahasiswa(c *fiber.Ctx) error {
+	id := c.Params("id")
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid ID format")
+	}
+
+	var requestData model.DataMahasiswa
+	if err := c.BodyParser(&requestData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Failed to parse request body",
+		})
+	}
+
+	filter := bson.M{"_id": objectId}
+	if err := db.UpdateMahasiswa(filter, requestData); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return fiber.NewError(fiber.StatusNotFound, "No document found")
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update data",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Data updated successfully",
 		"data":    requestData,
 	})
 }
