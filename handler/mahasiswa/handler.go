@@ -9,6 +9,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// InsertDataPresensi godoc
+// @Summary Insert data.
+// @Description Input data.
+// @Tags Mahasiswa
+// @Accept json
+// @Produce json
+// @Param request body DataMahasiswa true "Payload Body [RAW]"
+// @Success 200 {object} DataMahasiswa
+// @Failure 400
+// @Failure 500
+// @Router /api/mahasiswa [post]
 func TambahMahasiswa(c *fiber.Ctx) error {
 	var requestData model.DataMahasiswa
 	if err := c.BodyParser(&requestData); err != nil {
@@ -42,6 +53,14 @@ func TambahMahasiswa(c *fiber.Ctx) error {
 	})
 }
 
+// GetAllDataMahasiswa godoc
+// @Summary Get All Data.
+// @Description Mengambil semua data mahasiswa
+// @Tags Mahasiswa
+// @Accept json
+// @Produce json
+// @Success 200 {object} DataMahasiswa
+// @Router /api/mahasiswa [get]
 func GetAllDataMahasiswa(c *fiber.Ctx) error {
 	filter := bson.M{}
 
@@ -56,6 +75,18 @@ func GetAllDataMahasiswa(c *fiber.Ctx) error {
 	})
 }
 
+// GetDataMahasiswaByUname godoc
+// @Summary Get By ID Data.
+// @Description Ambil per ID data.
+// @Tags Mahasiswa
+// @Accept json
+// @Produce json
+// @Param id path string true "Masukan Nama"
+// @Success 200 {object} DataMahasiswa
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /api/mahasiswa/{id} [get]
 func GetDataMahasiswaByUname(c *fiber.Ctx) error {
 	namalengkap := c.Params("namalengkap")
 	filter := bson.M{"namalengkap": namalengkap}
@@ -69,6 +100,7 @@ func GetDataMahasiswaByUname(c *fiber.Ctx) error {
 		"data":    requestData,
 	})
 }
+
 func DeleteMahasiswa(c *fiber.Ctx) error {
 	id := c.Params("id")
 	filter := bson.M{"id": id}
@@ -86,6 +118,19 @@ func DeleteMahasiswa(c *fiber.Ctx) error {
 		"data":    requestData,
 	})
 }
+
+// UpdateData godoc
+// @Summary Update data presensi.
+// @Description Ubah data presensi.
+// @Tags Mahasiswa
+// @Accept json
+// @Produce json
+// @Param id path string true "Masukan ID"
+// @Param request body DataMahasiswa true "Payload Body [RAW]"
+// @Success 200 {object} DataMahasiswa
+// @Failure 400
+// @Failure 500
+// @Router /api/mahasiswa/{id} [put]
 func UpdateMahasiswa(c *fiber.Ctx) error {
 	id := c.Params("id")
 
