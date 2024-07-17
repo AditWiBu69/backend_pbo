@@ -3,6 +3,7 @@ package router
 import (
 	"api/handler/mahasiswa"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 )
 
 func SetupRoutes(app *fiber.App) {
@@ -14,4 +15,5 @@ func SetupRoutes(app *fiber.App) {
 	api.Delete("/mahasiswa/:id", mahasiswa.DeleteMahasiswa)
 	api.Put("/mahasiswa/:id", mahasiswa.UpdateMahasiswa)
 
+	api.Get("/docs/*", swagger.HandlerDefault)
 }
