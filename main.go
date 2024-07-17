@@ -26,7 +26,7 @@ func main() {
 		return c.SendStatus(404)
 	})
 
-	port := config.Config("PORT")
+	port := "1150"
 
 	err := app.Listen(":" + port)
 	if err != nil {

@@ -1,8 +1,8 @@
 package mahasiswa
 
 import (
-	"api/model"
-	"api/repository/db"
+	"github.com/AditWiBu69/pakage_be/model"
+	"github.com/AditWiBu69/pakage_be/repository/db"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
